@@ -1,21 +1,29 @@
-#include <stdlib.h>
-
 #ifndef CHACHA_CHACHAQUARTERROUND_H
 #define CHACHA_CHACHAQUARTERROUND_H
+
+#include <stdint.h>
+
+typedef struct {
+    uint8_t NumRounds;
+    uint32_t state[16];
+    uint32_t original_sate[16];
+} chachastate;
 
 /*
  * The key must be 32 bytes (or 256 bits)
  * The nonce must be 12 bytes (or 96 bits)
  * When this function is first called the counter var must be
  */
-void ChaChaEncrypt(const u_int8_t *key, const u_int8_t *nonce,
-                   u_int32_t *counter, u_int8_t NumRounds,
-                   u_int32_t plaintextLen, u_int8_t *plaintext);
 
-void fullRound(u_int32_t state[]);
+void ChaChaInitialize(chachastate *cipherInfo, const uint8_t *key, const uint8_t *nonce,
+                      uint32_t *counter, uint8_t NumRounds);
 
-//void quarterRound(u_int32_t *a, u_int32_t *b, u_int32_t *c, u_int32_t *d);
+void ChaChaEncrypt(chachastate *cipherInfo, uint32_t *plaintextLen, uint8_t *plaintext);
 
-//u_int32_t rollLeft(u_int32_t valueToRoll, int distance);
+void fullRound(uint32_t state[]);
+
+//void quarterRound(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d);
+
+//uint32_t rollLeft(uint32_t valueToRoll, int distance);
 
 #endif //CHACHA_CHACHAQUARTERROUND_H
