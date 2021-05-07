@@ -2,10 +2,10 @@
 #include <stdio.h>
 
 #define LE32(p) ( \
-    ((u_int32_t)(((u_int8_t *)(p))[0]) << 0) | \
-    ((u_int32_t)(((u_int8_t *)(p))[1]) << 8) | \
-    ((u_int32_t)(((u_int8_t *)(p))[2]) << 16) | \
-    ((u_int32_t)(((u_int8_t *)(p))[3]) << 24))
+    ((uint32_t)(((uint8_t *)(p))[0]) << 0) | \
+    ((uint32_t)(((uint8_t *)(p))[1]) << 8) | \
+    ((uint32_t)(((uint8_t *)(p))[2]) << 16) | \
+    ((uint32_t)(((uint8_t *)(p))[3]) << 24))
 
 #define rollLeft(valueToRoll, distance) (valueToRoll << distance | valueToRoll >> (32 - distance))
 
@@ -25,36 +25,47 @@
     b = rollLeft(b, 7); \
  }
 
-void ChaChaEncrypt(const u_int8_t *key, const u_int8_t *nonce,
-                   u_int32_t *counter, u_int8_t NumRounds,
-                   u_int32_t plaintextLen, u_int8_t *plaintext){
+void ChaChaInitialize(chachastate *cipherInfo, const uint8_t *key, const uint8_t *nonce,
+                      uint32_t *counter, uint8_t NumRounds){
 
-    u_int32_t state[16] = {
-            0x61707865, 0x3320646e, 0x79622d32, 0x6b206574 // Constants "expa" "nd 3" "2-by" "te k"
-    };
+    uint32_t *word = cipherInfo->state;
 
-    u_int32_t original_state[16];
-    u_int32_t offset = 0;
+    cipherInfo->NumRounds = NumRounds;
 
-    state[4] = LE32(key);
-    state[5] = LE32(key + 4);
-    state[6] = LE32(key + 8);
-    state[7] = LE32(key + 12);
+    // The constant is added to the state
+    word[0] = 0x61707865;
+    word[1] = 0x3320646e;
+    word[2] = 0x79622d32;
+    word[3] = 0x6b206574;
 
-    state[8] = LE32(key + 16);
-    state[9] = LE32(key + 20);
-    state[10] = LE32(key + 24);
-    state[11] = LE32(key + 28);
+    // 256 bit key is added to the state
+    word[4] = LE32(key);
+    word[5] = LE32(key + 4);
+    word[6] = LE32(key + 8);
+    word[7] = LE32(key + 12);
+    word[8] = LE32(key + 16);
+    word[9] = LE32(key + 20);
+    word[10] = LE32(key + 24);
+    word[11] = LE32(key + 28);
 
-    state[12] = *counter;
+    // The counter is added to the state
+    word[12] = *counter;
 
-    state[13] = LE32(nonce);
-    state[14] = LE32(nonce + 4);
-    state[15] = LE32(nonce + 8);
+    // The nonce is added to the state
+    word[13] = LE32(nonce);
+    word[14] = LE32(nonce + 4);
+    word[15] = LE32(nonce + 8);
 
+}
 
+void ChaChaEncrypt(chachastate *cipherInfo, uint32_t *plaintextLen, uint8_t *plaintext){
 
-    for(u_int8_t i = 0; i < 16; i++) {
+    uint32_t *state = cipherInfo->state;
+    uint32_t *original_state = cipherInfo->original_sate;
+    uint8_t *NumRounds = cipherInfo->NumRounds;
+
+    // Copy over the current state to the array that holds the temporary state
+    for(uint8_t i = 0; i < 16; i++) {
         original_state[i] = state[i];
     }
 
@@ -63,20 +74,19 @@ void ChaChaEncrypt(const u_int8_t *key, const u_int8_t *nonce,
     printf("%08x%08x%08x%08x\n", state[8], state[9], state[10], state[11]);
     printf("%08x%08x%08x%08x\n", state[12], state[13], state[14], state[15]);
 
-    for(u_int64_t i = 0; i < NumRounds; i += 2){
+    for(uint64_t i = 0; i < NumRounds; i += 2){
         fullRound(state);
     }
 
     // Add the original state to the current state and reformat it in little endian format
-    for(u_int8_t i = 0; i < 16; i++) {
+    for(uint8_t i = 0; i < 16; i++) {
         state[i] = state[i] + original_state[i];
-        //state[i] = __bswap_32(state[i]);
     }
 
     // Is this defined behavior???
-    u_int8_t *willThisWork = (u_int8_t*)state;
+    uint8_t *willThisWork = (uint8_t*)state;
 
-    for(u_int8_t i = 0; i < 64; i++){
+    for(uint8_t i = 0; i < 64; i++){
         plaintext[i] = plaintext[i] ^ willThisWork[i];
         printf("%02x\n", willThisWork[i]);
     }
@@ -88,20 +98,18 @@ void ChaChaEncrypt(const u_int8_t *key, const u_int8_t *nonce,
     printf("%08x%08x%08x%08x\n", state[12], state[13], state[14], state[15]);
 
     // Set the state back to its original position
-    for(u_int8_t i = 0; i < 16; i++) {
+    for(uint8_t i = 0; i < 16; i++) {
         state[i] = original_state[i];
     }
 
     // Increment the counter, both for this function and globally
-    state[12] = *counter = *counter + 1;
-
-    offset++;
+    state[12] = state[12] + 1;
 
 }
 
 // This function actually implements two rounds in one
 // The column manipulation and the diagonal row manipulation are considered separate rounds
-void fullRound(u_int32_t state[]){
+void fullRound(uint32_t state[]){
 
     // ChaCha column rounds
     /*
@@ -128,7 +136,7 @@ void fullRound(u_int32_t state[]){
     quarterRound(state[3], state[4], state[9], state[14]);
 }
 /*
-void quarterRound(u_int32_t *a, u_int32_t *b, u_int32_t *c, u_int32_t *d){
+void quarterRound(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d){
 
     // https://tools.ietf.org/html/rfc8439#section-2.1
 
@@ -153,7 +161,7 @@ void quarterRound(u_int32_t *a, u_int32_t *b, u_int32_t *c, u_int32_t *d){
     *b = rollLeft(*b, 7);
 }
 
-u_int32_t rollLeft(u_int32_t valueToRoll, int distance){
+uint32_t rollLeft(uint32_t valueToRoll, int distance){
     return valueToRoll << distance | valueToRoll >> (32 - distance);
 }
  */
