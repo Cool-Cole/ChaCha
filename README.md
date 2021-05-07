@@ -9,6 +9,7 @@ If you would like to make a contribution to this project, please open up an issu
 * Have it encrypt files
 * Put the cipher state into a struct
 * Clean up code and turn this into a proper lib
+* Support ChaCha version with 64 bit counter and 64 bit nonce (maybe unneccessary?)
 
 # Sources
 Here are a list of refrences that I used to guide me along with their accompanying liscense. I try not to copy paste code.
