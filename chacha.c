@@ -84,11 +84,12 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t *plaintextLen, uint8_t *pla
     }
 
     // Is this defined behavior???
-    uint8_t *willThisWork = (uint8_t*)state;
+    uint8_t *stateByteArray = (uint8_t*)state;
 
+    // XOR the contents of the chacha state with the plaintext
     for(uint8_t i = 0; i < 64; i++){
-        plaintext[i] = plaintext[i] ^ willThisWork[i];
-        printf("%02x\n", willThisWork[i]);
+        plaintext[i] = plaintext[i] ^ stateByteArray[i];
+        printf("%02x\n", stateByteArray[i]);
     }
 
     printf("\n");
