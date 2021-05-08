@@ -28,6 +28,7 @@
 void ChaChaInitialize(chachastate *cipherInfo, const uint8_t *key, const uint8_t *nonce,
                       uint32_t *counter, uint8_t NumRounds){
 
+    uint32_t *original_state = cipherInfo->original_sate;
     uint32_t *word = cipherInfo->state;
 
     cipherInfo->NumRounds = NumRounds;
@@ -56,55 +57,76 @@ void ChaChaInitialize(chachastate *cipherInfo, const uint8_t *key, const uint8_t
     word[14] = LE32(nonce + 4);
     word[15] = LE32(nonce + 8);
 
+    // Copy over the current state to the array that holds the temporary state
+    for(uint8_t i = 0; i < 16; i++) {
+        original_state[i] = word[i];
+    }
+
 }
 
-void ChaChaEncrypt(chachastate *cipherInfo, uint32_t *plaintextLen, uint8_t *plaintext){
+void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plaintext){
 
     uint32_t *state = cipherInfo->state;
     uint32_t *original_state = cipherInfo->original_sate;
     uint8_t *NumRounds = cipherInfo->NumRounds;
 
-    // Copy over the current state to the array that holds the temporary state
-    for(uint8_t i = 0; i < 16; i++) {
-        original_state[i] = state[i];
+    uint32_t position = 0;
+
+    // This loop encrypts the entire len of the plaintext
+    while(plaintextLen > 0){
+
+        // Manipulate the working state
+        for(uint64_t i = 0; i < NumRounds; i += 2){
+            fullRound(state);
+        }
+
+        // Add the original state to the current state and reformat it in little endian format
+        for(uint8_t i = 0; i < 16; i++) {
+            state[i] = state[i] + original_state[i];
+        }
+
+        // Apparently, you can turn an array of 4 byte words into 1 byte words!
+        // Cool!
+        uint8_t *stateByteArray = (uint8_t*)state;
+
+        if(plaintextLen < 64){
+            // XOR the contents of the chacha state with the plaintext
+
+            int i = 0;
+            while(plaintextLen > 0){
+                plaintext[position] = plaintext[position] ^ stateByteArray[i];
+                position++;
+                i++;
+                plaintextLen--;
+            }
+
+        } else {
+            // XOR the contents of the chacha state with the plaintext
+            for(uint8_t i = 0; i < 64; i++) {
+                plaintext[position] = plaintext[position] ^ stateByteArray[i];
+                position++;
+            }
+
+            plaintextLen = plaintextLen - 64;
+
+        }
+
+        printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[0], state[1], state[2], state[3]);
+        printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[4], state[5], state[6], state[7]);
+        printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[8], state[9], state[10], state[11]);
+        printf("0x%08x 0x%08x 0x%08x 0x%08x\n\n", state[12], state[13], state[14], state[15]);
+
+        // Set the state back to its original position
+        for(uint8_t i = 0; i < 16; i++) {
+            state[i] = original_state[i];
+        }
+
+        // Increment the counter, both for this function and globally
+        state[12] = state[12] + 1;
+        original_state[12] = state[12];
+
+
     }
-
-    printf("%08x%08x%08x%08x\n", state[0], state[1], state[2], state[3]);
-    printf("%08x%08x%08x%08x\n", state[4], state[5], state[6], state[7]);
-    printf("%08x%08x%08x%08x\n", state[8], state[9], state[10], state[11]);
-    printf("%08x%08x%08x%08x\n", state[12], state[13], state[14], state[15]);
-
-    for(uint64_t i = 0; i < NumRounds; i += 2){
-        fullRound(state);
-    }
-
-    // Add the original state to the current state and reformat it in little endian format
-    for(uint8_t i = 0; i < 16; i++) {
-        state[i] = state[i] + original_state[i];
-    }
-
-    // Is this defined behavior???
-    uint8_t *stateByteArray = (uint8_t*)state;
-
-    // XOR the contents of the chacha state with the plaintext
-    for(uint8_t i = 0; i < 64; i++){
-        plaintext[i] = plaintext[i] ^ stateByteArray[i];
-        printf("%02x\n", stateByteArray[i]);
-    }
-
-    printf("\n");
-    printf("%08x%08x%08x%08x\n", state[0], state[1], state[2], state[3]);
-    printf("%08x%08x%08x%08x\n", state[4], state[5], state[6], state[7]);
-    printf("%08x%08x%08x%08x\n", state[8], state[9], state[10], state[11]);
-    printf("%08x%08x%08x%08x\n", state[12], state[13], state[14], state[15]);
-
-    // Set the state back to its original position
-    for(uint8_t i = 0; i < 16; i++) {
-        state[i] = original_state[i];
-    }
-
-    // Increment the counter, both for this function and globally
-    state[12] = state[12] + 1;
 
 }
 
