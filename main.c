@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include "chacha.h"
 
+#include <assert.h>
+
 #define NUMROUNDS 20
 
 int main() {
@@ -23,21 +25,19 @@ int main() {
     
     uint32_t counter = 1;
 
-    uint32_t plainLen = 64;
+    uint32_t plainLen = 114;
 
     chachastate chaInfo;
 
-    //ChaChaEncrypt(key, nonce, &counter, NUMROUNDS, 128, plain);
-
     ChaChaInitialize(&chaInfo, key, nonce, &counter, NUMROUNDS);
 
-    ChaChaEncrypt(&chaInfo, &plainLen, &plain);
+    ChaChaEncrypt(&chaInfo, plainLen, &plain);
 
-    printf("%x %x %x %x %x\n", plain[0], plain[1], plain[2], plain[3], plain[4]);
-    printf("%02x %02x %02x %02x\n", plain[5], plain[6], plain[7], plain[8]);
-    printf("%02x %02x %02x %02x\n", plain[9], plain[10], plain[11], plain[12]);
-    printf("%02x %02x %02x %02x\n", plain[13], plain[14], plain[15], plain[16]);
+    printf("%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", plain[0], plain[1], plain[2], plain[3], plain[4], plain[5], plain[6], plain[7], plain[8], plain[9], plain[10], plain[11], plain[12], plain[13], plain[14], plain[15], plain[16]);
 
+    printf("%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", plain[65], plain[66], plain[67], plain[68], plain[69], plain[70], plain[71], plain[72], plain[73], plain[74], plain[75], plain[76], plain[77], plain[78], plain[79], plain[80], plain[81]);
+
+    assert(1 == 2);
 
     //printf("\n");
     
