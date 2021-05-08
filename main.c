@@ -32,10 +32,10 @@ int main() {
     uint8_t buffer[4096];
 
     FILE *rfp;
-    rfp = fopen("./test.txt","rb");
+    rfp = fopen("./plain.txt","rb");
 
     FILE *wfp;
-    wfp = fopen("./vector1.bin","wb");
+    wfp = fopen("./encrypted.bin","wb");
 
     if(rfp == NULL || wfp == NULL){
         printf("Could not open file\n");
