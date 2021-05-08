@@ -3,9 +3,7 @@ This is an implementation of the ChaCha stream cipher in C that aims to be compl
 
 With time, I plan on improving this project and turning it into a useable ChaCha & Poly1305 encryption libary.
 
-If you would like to make a contribution to this project, please open up an issue and send me some advice/reasources to help me learn what I am doing incorrectly or what I could be doing better. That would help a lot!!!
-
-(I think this implements the ChaCha algoritim correclty )
+If you would like to make a contribution to this project please open up an issue and, instead of submitting code, please submit advice/reasources to help me learn what I am doing incorrectly or what I could be doing better. That would help a lot!!!
 
 # Implemented
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
