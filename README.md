@@ -8,7 +8,7 @@ If you would like to make a contribution to this project please open up an issue
 # Implemented
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of byte arrays in memory (Due to the bug described in the TODO, do not encrypt multiple byte arrays if 64 is not a factor of their length)
-* File encryption tested and confirmed working! (Due to the bug described in the TODO, do not encrypt multiple files under the same ChaCha state!)
+* File encryption tested and confirmed working! (Due to the bug described in the TODO, do not encrypt multiple files under the same ChaCha state!) (On my i9-9900K I can achive a throughput of about 500 Mibibytes per second when encrypting files from my SSD. (For refrence my SSD can read at about 3.3 Gibibytes per second so it isn't the bottle neck))
 
 # TODO
 * BUG: Encrypting occurances of plaintext that do not divide by 64 cleanly under the same ChaCha state will cause the code to incorrectly throw out parts of the keystream and increment the counter instead of saving the leftover bytes and using them for the next function call.
