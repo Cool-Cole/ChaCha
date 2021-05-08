@@ -1,5 +1,4 @@
 #include "chacha.h"
-#include <stdio.h>
 
 #define LE32(p) ( \
     ((uint32_t)(((uint8_t *)(p))[0]) << 0) | \
@@ -68,7 +67,7 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
 
     uint32_t *state = cipherInfo->state;
     uint32_t *original_state = cipherInfo->original_sate;
-    uint8_t *NumRounds = cipherInfo->NumRounds;
+    uint8_t NumRounds = cipherInfo->NumRounds;
 
     uint32_t position = 0;
 
@@ -110,11 +109,6 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
             plaintextLen = plaintextLen - 64;
 
         }
-
-        printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[0], state[1], state[2], state[3]);
-        printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[4], state[5], state[6], state[7]);
-        printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[8], state[9], state[10], state[11]);
-        printf("0x%08x 0x%08x 0x%08x 0x%08x\n\n", state[12], state[13], state[14], state[15]);
 
         // Set the state back to its original position
         for(uint8_t i = 0; i < 16; i++) {
