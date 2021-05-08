@@ -1,4 +1,4 @@
-Taken from Test Vector #2 of https://tools.ietf.org/html/rfc8439#appendix-A.2
+Taken from Example and Test Vector for the ChaCha20 Cipher of https://tools.ietf.org/html/rfc8439#section-2.4.2
 
 To test yourself here is the key, nonce, and counter below.
 
