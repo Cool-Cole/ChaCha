@@ -8,12 +8,14 @@ If you would like to make a contribution to this project, please open up an issu
 # Implemented
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of variable length byte arrays in memory 
-* File encryption tested and confirmed working!
+* File encryption tested and confirmed working! (can encrypt files at about 500 megabytes per second single threaded on an i9-9900K)
 
 # TODO
 * Have it take user input
 * Clean up code and turn this into a proper lib
+* Have functions return errors (if counter reaches max, if function params incorrect, ect)
 * Support ChaCha version with 64 bit counter and 64 bit nonce (maybe unneccessary?)
+* Multithreading
 
 # Sources
 Here are a list of refrences that I used to guide me along with their accompanying liscense. I try not to copy paste code.
