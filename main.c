@@ -32,10 +32,10 @@ int main() {
     uint8_t buffer[4096];
 
     FILE *rfp;
-    rfp = fopen("./ubuntu.iso","rb");
+    rfp = fopen("./inputfile","rb");
 
     FILE *wfp;
-    wfp = fopen("./enc.ubuntu.bin","wb");
+    wfp = fopen("./outputfile","wb");
 
     if(rfp == NULL || wfp == NULL){
         printf("Could not open file\n");
@@ -50,7 +50,6 @@ int main() {
         ChaChaEncrypt(&chaInfo, plainLen, buffer);
 
         fwrite(buffer, 1, plainLen, wfp);
-
 
     }
 
