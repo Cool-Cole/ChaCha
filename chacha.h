@@ -22,8 +22,4 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
 
 void fullRound(uint32_t state[]);
 
-//void quarterRound(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d);
-
-//uint32_t rollLeft(uint32_t valueToRoll, int distance);
-
 #endif //CHACHA_CHACHAQUARTERROUND_H
