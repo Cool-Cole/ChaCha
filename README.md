@@ -8,10 +8,10 @@ If you would like to make a contribution to this project, please open up an issu
 # Implemented
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of variable length byte arrays in memory 
+* File encryption tested and confirmed working!
 
 # TODO
-* Have it encrypt files
-* Put the cipher state into a struct
+* Have it take user input
 * Clean up code and turn this into a proper lib
 * Support ChaCha version with 64 bit counter and 64 bit nonce (maybe unneccessary?)
 
