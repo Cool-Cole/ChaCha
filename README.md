@@ -7,7 +7,7 @@ If you would like to make a contribution to this project please open up an issue
 
 # Implemented
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
-* Encryption of variable length byte arrays in memory (Due to the bug described in the TODO, do not encrypt multiple byte arrays if 64 is not a factor of their length)
+* Encryption of byte arrays in memory (Due to the bug described in the TODO, do not encrypt multiple byte arrays if 64 is not a factor of their length)
 * File encryption tested and confirmed working! (Due to the bug described in the TODO, do not encrypt multiple files under the same ChaCha state!)
 
 # TODO
