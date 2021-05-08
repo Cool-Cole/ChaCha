@@ -20,5 +20,7 @@ Here are a list of refrences that I used to guide me along with their accompanyi
 
 GPL-2.0-or-later
 https://www.oryx-embedded.com/doc/chacha_8c_source.html
+
 https://www.oryx-embedded.com/doc/chacha_8h_source.html
+
 https://www.oryx-embedded.com/doc/cpu__endian_8h_source.html - The defintion LE32 in chacha.c came from this file.
