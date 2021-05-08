@@ -14,6 +14,7 @@ If you would like to make a contribution to this project, please open up an issu
 
 # TODO
 * Fix file encryption bug caused by changeing the fread scan size
+
 Example - ![fileread](https://user-images.githubusercontent.com/76749623/117550456-860d9580-b00e-11eb-874c-f88bef23ce80.png)
 * Have it take user input
 * Clean up code and turn this into a proper lib
