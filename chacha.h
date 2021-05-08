@@ -18,7 +18,7 @@ typedef struct {
 void ChaChaInitialize(chachastate *cipherInfo, const uint8_t *key, const uint8_t *nonce,
                       uint32_t *counter, uint8_t NumRounds);
 
-void ChaChaEncrypt(chachastate *cipherInfo, uint32_t *plaintextLen, uint8_t *plaintext);
+void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plaintext);
 
 void fullRound(uint32_t state[]);
 
