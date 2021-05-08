@@ -1,5 +1,7 @@
 #include "chacha.h"
 
+#include <stdio.h>
+
 #define LE32(p) ( \
     ((uint32_t)(((uint8_t *)(p))[0]) << 0) | \
     ((uint32_t)(((uint8_t *)(p))[1]) << 8) | \
@@ -91,9 +93,17 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
         if(plaintextLen < 64){
             // XOR the contents of the chacha state with the plaintext
 
+            printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[0], state[1], state[2], state[3]);
+            printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[4], state[5], state[6], state[7]);
+            printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[8], state[9], state[10], state[11]);
+            printf("0x%08x 0x%08x 0x%08x 0x%08x\n", state[12], state[13], state[14], state[15]);
+
+            printf("\n");
+
             int i = 0;
             while(plaintextLen > 0){
                 plaintext[position] = plaintext[position] ^ stateByteArray[i];
+                //plaintext[position] = stateByteArray[i];
                 position++;
                 i++;
                 plaintextLen--;
@@ -103,6 +113,7 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
             // XOR the contents of the chacha state with the plaintext
             for(uint8_t i = 0; i < 64; i++) {
                 plaintext[position] = plaintext[position] ^ stateByteArray[i];
+                //plaintext[position] = stateByteArray[i];
                 position++;
             }
 
@@ -152,33 +163,3 @@ void fullRound(uint32_t state[]){
     quarterRound(state[2], state[7], state[8], state[13]);
     quarterRound(state[3], state[4], state[9], state[14]);
 }
-/*
-void quarterRound(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d){
-
-    // https://tools.ietf.org/html/rfc8439#section-2.1
-
-    // a += b; d ^= a; d <<<= 16;
-    *a += *b;
-    *d ^= *a;
-    *d = rollLeft(*d, 16);
-
-    // c += d; b ^= c; b <<<= 12;
-    *c += *d;
-    *b ^= *c;
-    *b = rollLeft(*b, 12);
-
-    // a += b; d ^= a; d <<<= 8;
-    *a += *b;
-    *d ^= *a;
-    *d = rollLeft(*d, 8);
-
-    // c += d; b ^= c; b <<<= 7;
-    *c += *d;
-    *b ^= *c;
-    *b = rollLeft(*b, 7);
-}
-
-uint32_t rollLeft(uint32_t valueToRoll, int distance){
-    return valueToRoll << distance | valueToRoll >> (32 - distance);
-}
- */
