@@ -5,12 +5,16 @@ With time, I plan on improving this project and turning it into a useable ChaCha
 
 If you would like to make a contribution to this project, please open up an issue and send me some advice/reasources to help me learn what I am doing incorrectly or what I could be doing better. That would help a lot!!!
 
+(I think this implements the ChaCha algoritim correclty )
+
 # Implemented
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of variable length byte arrays in memory 
-* File encryption tested and confirmed working! (can encrypt files at about 500 megabytes per second single threaded on an i9-9900K)
+* File encryption ~~tested and confirmed working!~~ (can encrypt files at about 500 megabytes per second single threaded on an i9-9900K)
 
 # TODO
+* Fix file encryption bug caused by changeing the fread scan size
+Example - ![fileread](https://user-images.githubusercontent.com/76749623/117550456-860d9580-b00e-11eb-874c-f88bef23ce80.png)
 * Have it take user input
 * Clean up code and turn this into a proper lib
 * Have functions return errors (if counter reaches max, if function params incorrect, ect)
