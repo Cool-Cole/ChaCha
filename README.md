@@ -10,14 +10,13 @@ If you would like to make a contribution to this project, please open up an issu
 # Implemented
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of variable length byte arrays in memory 
-* File encryption ~~tested and confirmed working!~~ (can encrypt files at about 500 megabytes per second single threaded on an i9-9900K)
+* File encryption tested and confirmed working! (Due to the bug described in the TODO, do not encrypt multiple files under the same ChaCha state!)
 
 # TODO
-* Fix file encryption bug caused by changeing the fread scan size. Example - ![fileread](https://user-images.githubusercontent.com/76749623/117550456-860d9580-b00e-11eb-874c-f88bef23ce80.png)
+* BUG: Encrypting occurances of plaintext that do not divide by 64 cleanly under the same ChaCha state will cause the code to incorrectly throw out parts of the keystream and increment the counter instead of saving the leftover bytes and using them for the next function call.
 * Have it take user input
 * Clean up code and turn this into a proper lib
 * Have functions return errors (if counter reaches max, if function params incorrect, ect)
-* Support ChaCha version with 64 bit counter and 64 bit nonce (maybe unneccessary?)
 * Multithreading
 
 # Sources
