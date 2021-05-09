@@ -8,7 +8,7 @@ With time, I plan on improving this project and turning it into a useable ChaCha
 If you would like to make a contribution to this project please open up an issue and, instead of submitting code, please submit advice/reasources to help me learn what I am doing incorrectly or what I could be doing better. That would help a lot!!!
 
 # !WARNING!
-Do not use this in production code! I am not a Cryptographer and only a novice at C and as such this code is probably really bad! This is just a learning project.
+Do not use this in production code! I am not a Cryptographer and only a novice at C, as such this code is probably really bad! This is just a learning project.
 
 # Implemented
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
