@@ -32,6 +32,8 @@ void ChaChaInitialize(chachastate *cipherInfo, const uint8_t *key, const uint8_t
 
     cipherInfo->NumRounds = NumRounds;
 
+    cipherInfo->keyStreamPosition = 0;
+
     // The constant is added to the state
     word[0] = 0x61707865;
     word[1] = 0x3320646e;
@@ -68,59 +70,48 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
     uint32_t *state = cipherInfo->state;
     uint32_t *original_state = cipherInfo->original_sate;
     uint8_t NumRounds = cipherInfo->NumRounds;
+    uint8_t *keyStreamPosition = &cipherInfo->keyStreamPosition;
 
-    uint32_t position = 0;
+    uint32_t plainBytePosition = 0;
 
     // This loop encrypts the entire len of the plaintext
     while(plaintextLen > 0){
 
-        // Manipulate the working state
-        for(uint64_t i = 0; i < NumRounds; i += 2){
-            fullRound(state);
-        }
+        if(*keyStreamPosition == 0) {
+            // Manipulate the working state
+            for (uint64_t i = 0; i < NumRounds; i += 2) {
+                fullRound(state);
+            }
 
-        // Add the original state to the current state and reformat it in little endian format
-        for(uint8_t i = 0; i < 16; i++) {
-            state[i] = state[i] + original_state[i];
+            // Add the original state to the current state
+            for (uint8_t i = 0; i < 16; i++) {
+                state[i] = state[i] + original_state[i];
+            }
         }
 
         // Apparently, you can turn an array of 4 byte words into 1 byte words!
         // Cool!
         uint8_t *stateByteArray = (uint8_t*)state;
 
-        if(plaintextLen < 64){
-            // XOR the contents of the chacha state with the plaintext
-
-            int i = 0;
-            while(plaintextLen > 0){
-                plaintext[position] = plaintext[position] ^ stateByteArray[i];
-                //plaintext[position] = stateByteArray[i];
-                position++;
-                i++;
-                plaintextLen--;
-            }
-
-        } else {
-            // XOR the contents of the chacha state with the plaintext
-            for(uint8_t i = 0; i < 64; i++) {
-                plaintext[position] = plaintext[position] ^ stateByteArray[i];
-                //plaintext[position] = stateByteArray[i];
-                position++;
-            }
-
-            plaintextLen = plaintextLen - 64;
-
+        while(*keyStreamPosition != 64 && plaintextLen != 0){
+            plaintext[plainBytePosition] = plaintext[plainBytePosition] ^ stateByteArray[*keyStreamPosition];
+            *keyStreamPosition = *keyStreamPosition + 1;
+            plainBytePosition++;
+            plaintextLen--;
         }
 
-        // Set the state back to its original position
-        for(uint8_t i = 0; i < 16; i++) {
-            state[i] = original_state[i];
+        if(*keyStreamPosition == 64){
+            *keyStreamPosition = 0;
+
+            // Increment the state counter
+            original_state[12] = original_state[12] + 1;
+
+            // Set the state back to its original position
+            for(uint8_t i = 0; i < 16; i++) {
+                state[i] = original_state[i];
+            }
+
         }
-
-        // Increment the counter, both for this function and globally
-        state[12] = state[12] + 1;
-        original_state[12] = state[12];
-
 
     }
 
