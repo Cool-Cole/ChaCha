@@ -71,10 +71,11 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
     uint32_t *original_state = cipherInfo->original_sate;
     uint8_t NumRounds = cipherInfo->NumRounds;
     uint8_t *keyStreamPosition = &cipherInfo->keyStreamPosition;
-
+    
+    // This is essentially the 
     uint32_t plainBytePosition = 0;
 
-    // This loop encrypts the entire len of the plaintext
+    // This loop encrypts the entire len of the provided plaintext
     while(plaintextLen > 0){
 
         if(*keyStreamPosition == 0) {
@@ -92,15 +93,19 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
         // Apparently, you can turn an array of 4 byte words into 1 byte words!
         // Cool!
         uint8_t *stateByteArray = (uint8_t*)state;
-
+        
+        // This loops until either the entire keystream has been used or if the provided plaintext has been encrypted
         while(*keyStreamPosition != 64 && plaintextLen != 0){
             plaintext[plainBytePosition] = plaintext[plainBytePosition] ^ stateByteArray[*keyStreamPosition];
+            
             *keyStreamPosition = *keyStreamPosition + 1;
             plainBytePosition++;
             plaintextLen--;
         }
-
+	
+	// If the entire keystream has been used set the keyStreamPosition counter back to 0 and reinitialize the ciphers state
         if(*keyStreamPosition == 64){
+        
             *keyStreamPosition = 0;
 
             // Increment the state counter
@@ -117,8 +122,9 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
 
 }
 
-// This function actually implements two rounds in one
+// This function implements two rounds in one
 // The column manipulation and the diagonal row manipulation are considered separate rounds
+// TODO - Turn this into a definition (Possible speed gain?)
 void fullRound(uint32_t state[]){
 
     // ChaCha column rounds
