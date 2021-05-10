@@ -13,7 +13,7 @@ Do not use this in production code! I am not a Cryptographer and only a novice a
 # Implemented
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of variable length byte arrays in memory
-* File encryption tested and confirmed working! (On my i9-9900K I can achive a throughput of about 500 Mibibytes per second when encrypting files from my SSD. (For refrence my SSD can read at about 3.3 Gibibytes per second so it isn't the bottle neck))
+* File encryption tested and confirmed working! (On my i9-9900K I can achive a throughput of about 500 Mibibytes per second when encrypting files from my SSD.)
 
 # TODO
 * Have it take user input
