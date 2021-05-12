@@ -5,9 +5,11 @@
 
 typedef struct {
     uint8_t NumRounds;
+    uint8_t keyStreamPosition;
     uint32_t state[16];
     uint32_t original_sate[16];
 } chachastate;
+
 
 /*
  * The key must be 32 bytes (or 256 bits)
