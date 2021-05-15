@@ -58,51 +58,56 @@ void ChaChaInitialize(chachastate *cipherInfo, const uint8_t *key, const uint8_t
     word[14] = LE32(nonce + 4);
     word[15] = LE32(nonce + 8);
 
-    // Copy over the current state to the array that holds the temporary state
+    // Copy over the working state to the array that holds the original state
     for(uint8_t i = 0; i < 16; i++) {
         original_state[i] = word[i];
     }
 
 }
 
-void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plaintext){
+void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plainTextLen, uint8_t *plainText){
 
     uint32_t *state = cipherInfo->state;
     uint32_t *original_state = cipherInfo->original_sate;
     uint8_t NumRounds = cipherInfo->NumRounds;
     uint8_t *keyStreamPosition = &cipherInfo->keyStreamPosition;
-
     uint32_t plainBytePosition = 0;
 
-    // This loop encrypts the entire len of the plaintext
-    while(plaintextLen > 0){
+    // This loop encrypts the entire len of the plainText
+    while(plainTextLen > 0){
 
+        // If the keystream position is at 0 then generate a new keystream by updating the cipher state
         if(*keyStreamPosition == 0) {
-            // Manipulate the working state
+            // Update the working state
             for (uint64_t i = 0; i < NumRounds; i += 2) {
                 fullRound(state);
             }
 
-            // Add the original state to the current state
+            // Add the original state to the current state to produce the keystream
             for (uint8_t i = 0; i < 16; i++) {
                 state[i] = state[i] + original_state[i];
             }
         }
 
-        // Apparently, you can turn an array of 4 byte words into 1 byte words!
-        // Cool!
         uint8_t *stateByteArray = (uint8_t*)state;
 
-        // This loops until either the entire keystream has been used or if the provided plaintext has been encrypted
-        while(*keyStreamPosition != 64 && plaintextLen != 0){
-            plaintext[plainBytePosition] = plaintext[plainBytePosition] ^ stateByteArray[*keyStreamPosition];
+        // This loops until either the entire keystream has been used or if the provided plainText has been encrypted
+        // TODO - This looks ugly, how do I clean this up?
+        while(*keyStreamPosition != 64 && plainTextLen != 0){
+            // XOR the plaintext byte to the keystream byte in order to produce the cipher text
+            plainText[plainBytePosition] = plainText[plainBytePosition] ^ stateByteArray[*keyStreamPosition];
+
+            // Increment the keystream position.
             *keyStreamPosition = *keyStreamPosition + 1;
+
+            // Increment the plaintext position and decrement the total plaintext length
             plainBytePosition++;
-            plaintextLen--;
+            plainTextLen--;
         }
 
         // If the entire keystream has been used set the keyStreamPosition counter back to 0 and reinitialize the ciphers state
         if(*keyStreamPosition == 64){
+            // Reset keystream position
             *keyStreamPosition = 0;
 
             // Increment the state counter
@@ -117,6 +122,11 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plaintextLen, uint8_t *plai
 
     }
 
+}
+
+// This just calls ChaChaEncrypt as both encryption and decryption are the same operation
+void ChaChaDecrypt(chachastate *cipherInfo, uint32_t plainTextLen, uint8_t *cipherText){
+    ChaChaEncrypt(cipherInfo, plainTextLen, cipherText);
 }
 
 // This function implements two rounds in one
