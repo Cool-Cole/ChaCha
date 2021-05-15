@@ -1,3 +1,5 @@
+// This main.c file is here for testing only. I plan on removing it or changing it to take user input.
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -45,7 +47,7 @@ int main() {
     rfp = fopen("../plain1.enc","rb");
 
     FILE *wfp;
-    wfp = fopen("./plain1.txt","wb");
+    wfp = fopen("../plain1.txt","wb");
 
     if(rfp == NULL || wfp == NULL){
         printf("Could not open file\n");
@@ -57,7 +59,7 @@ int main() {
     while(plainLen != 0){
         plainLen = fread(buffer, 1, readSize, rfp);
 
-        ChaChaEncrypt(&chaInfo, plainLen, buffer);
+        ChaChaDecrypt(&chaInfo, plainLen, buffer);
 
         fwrite(buffer, 1, plainLen, wfp);
     }
