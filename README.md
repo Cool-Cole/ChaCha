@@ -19,7 +19,7 @@ Do not use this in production code! I am not a Cryptographer and only a novice a
 * Have it take user input
 * Clean up code and turn this into a proper lib
 * Have functions return errors (if counter reaches max, if function params incorrect, ect)
-* Multithreading
+* Multithreading (maybe?)
 
 # Sources
 Here are a list of refrences that I used to guide me along with their accompanying liscense. I try not to copy paste code.
@@ -31,4 +31,4 @@ https://www.oryx-embedded.com/doc/chacha_8c_source.html
 
 https://www.oryx-embedded.com/doc/chacha_8h_source.html
 
-https://www.oryx-embedded.com/doc/cpu__endian_8h_source.html - The defintion LE32 in chacha.c came from this file.
+https://www.oryx-embedded.com/doc/cpu__endian_8h_source.html
