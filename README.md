@@ -20,6 +20,7 @@ Do not use this in production code! I am not a Cryptographer and only a novice a
 * Clean up code and turn this into a proper lib
 * Have functions return errors (if counter reaches max, if function params incorrect, ect)
 * Multithreading (maybe?)
+* Create a second vectorized implementation using AVX2 SIMD
 
 # Sources
 Here are a list of refrences that I used to guide me along with their accompanying liscense. I try not to copy paste code.
