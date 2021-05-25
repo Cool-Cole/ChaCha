@@ -13,22 +13,22 @@
 
 void printHelp(){
 
-    printf( "Usage: chacha [OPTION]... [FILE]...\n"\
+    printf( "Usage: chacha [OPTIONS]...\n"\
             "Encrypts/Decrypts files using ChaCha20\n"
             "\n"\
-            " -h                   Prints this screen\n"\
-            " -e [filename]        Encrypts a specified file (must be passed with -r or -k and -n)\n"\
-            " -d [filename]        Decrypts a specified file (must be passed with -k and -n)\n"\
-            " -k [256 bit Key]     Specifies the key used for encryption/decryption\n"\
-            " -n [96 bit nonce]    Specifies the nonce used for encryption/decryption\n"\
-            " -r                   Generates a random key and nonce pair\n"\
+            " -h                        Prints this screen\n"\
+            " -e [filename]             Encrypts a specified file (must be passed with -r or -k and -n)\n"\
+            " -d [filename]             Decrypts a specified file (must be passed with -k and -n)\n"\
+            " -k [256 bit Key in hex]   Specifies the key used for encryption/decryption\n"\
+            " -n [96 bit nonce in hex]  Specifies the nonce used for encryption/decryption\n"\
+            " -r                        Generates a random key and nonce pair\n"\
             "\n"\
             "Examples - \n"\
             "chacha -r -e testfile.txt\n"\
-            "chacha -k EFA3B9D80AF046A4ECA49F3DF2AEBE65E076ECDB48821D7881969429D7997601 -n 5D91B78D027B67C57CC0B7AF -d testfile.txt.enc\n"\
+            "chacha -d testfile.txt.enc -k EFA3B9D80AF046A4ECA49F3DF2AEBE65E076ECDB48821D7881969429D7997601 -n 5D91B78D027B67C57CC0B7AF\n"\
             "\n"\
-            "WARNING: This is a learning project! Do not trust without proper code review!\n"\
-            "This executable does not delete the file that it encrypts/decrypts. So don't worry about losing any data.\n"\
+            "WARNING: This is a learning project! Do not trust this program without proper code review!\n"\
+            "This executable does not delete the file that it encrypts/decrypts.\nSo don't worry about losing any data.\n"\
             "\n"\
             "ChaCha file Encryptor created by Cole 2021\n"\
             "Public Domain Software - Free Forever\n");
@@ -214,8 +214,13 @@ int main(int argc, char *argv[]) {
 
     if(encFlag == 1){
         if(randomFlag == 1){
-            getentropy(byteKey, 32);
-            getentropy(byteNonce, 12);
+            
+            // Check to make sure that getentropy executed succsessfully
+            if(getentropy(byteKey, 32) == -1 || getentropy(byteNonce, 12) == -1){
+                printf("Error generating random bits for the key and nonce.\nQuiting...\n");
+                exit(0);
+            }
+            
 
             printf("Random key: %s\n", binToHex(byteKey, 32));
             printf("Random nonce: %s\n", binToHex(byteNonce, 12));
@@ -223,8 +228,12 @@ int main(int argc, char *argv[]) {
 
             fileEncrypt(fileStr, byteKey, byteNonce);
         } else if (keyFlag == 1 && nonceFlag == 1) {
-            printf("Key: %s\n", keyStr);
-            printf("Nonce: %s\n", nonceStr);
+            
+            // The user provided nonce and key are phrased and shown back to the user
+            // if there is a discrepancy between what the user entered and what is outputted
+            // then an error has obviously occurred
+            printf("Key: %s\n", binToHex(hexToBin(keyStr, 64), 32));
+            printf("Nonce: %s\n", binToHex(hexToBin(nonceStr, 24), 12));
 
             fileEncrypt(fileStr, hexToBin(keyStr, 64), hexToBin(nonceStr, 24));
         }
@@ -232,8 +241,10 @@ int main(int argc, char *argv[]) {
 
 
     if(decFlag == 1){
-        printf("Key: %s\n", keyStr);
-        printf("Nonce: %s\n", nonceStr);
+        
+        // Same trick I used in the encryption key display is used here as well
+        printf("Key: %s\n", binToHex(hexToBin(keyStr, 64), 32));
+        printf("Nonce: %s\n", binToHex(hexToBin(nonceStr, 24), 12));
 
         fileDecrypt(fileStr, hexToBin(keyStr, 64), hexToBin(nonceStr, 24));
     }
