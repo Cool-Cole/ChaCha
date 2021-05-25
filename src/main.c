@@ -1,5 +1,3 @@
-// This main.c file is here for testing only. I plan on removing it or changing it to take user input.
-
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
