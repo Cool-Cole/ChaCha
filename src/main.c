@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
     int opt;
     char nonceStr[25] = {'\0'};
     char keyStr[65] = {'\0'};
-    char fileStr[255] = {'\0'};
+    char fileStr[256] = {'\0'};
     uint8_t encFlag = 0;
     uint8_t decFlag = 0;
     uint8_t randomFlag = 0;
@@ -149,8 +149,8 @@ int main(int argc, char *argv[]) {
     uint8_t keyFlag = 0;
     uint8_t nonceFlag = 0;
 
-    uint8_t *byteKey;
-    uint8_t *byteNonce;
+    uint8_t byteKey[32];
+    uint8_t byteNonce[12];
 
     // put ':' in the starting of the
     // string so that program can
