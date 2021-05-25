@@ -14,9 +14,9 @@ Do not use this in production code! I am not a Cryptographer and only a novice a
 * ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of variable length byte arrays in memory
 * File encryption tested and confirmed working! (On my i9-9900K I can achive a throughput of about 500 Mibibytes per second when encrypting files from my SSD.)
+* Takes user input as a command line program
 
 # TODO
-* Have it take user input
 * Clean up code and turn this into a proper lib
 * Have functions return errors (if counter reaches max, if function params incorrect, ect)
 * Multithreading (maybe?)
