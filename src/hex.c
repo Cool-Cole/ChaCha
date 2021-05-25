@@ -1,10 +1,7 @@
-//
-// Created by cole on 5/18/21.
-//
-
 #include "hex.h"
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 const char hex[17] = {'0' , '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', '\0'};
 
@@ -40,10 +37,18 @@ uint8_t *hexToBin(const char hexKey[], const size_t hexLen){
 
     int byteIndex;
     int charIndex;
+    
+    char tempKey[hexLen];
+    
+    // Ensure that both lower case and upper case hex provided by the user will work
+    for(int i = 0; i < hexLen; i++){
+        tempKey[i] = toupper(hexKey[i]);
+    }
+    
 
     for(byteIndex = 0, charIndex = 0; charIndex < hexLen; byteIndex++, charIndex += 2){
-        outputKey[byteIndex] = (int)(strchr(hex, hexKey[charIndex]) - hex) << 4;
-        outputKey[byteIndex] = outputKey[byteIndex] | (int)(strchr(hex, hexKey[charIndex + 1]) - hex);
+        outputKey[byteIndex] = (int)(strchr(hex, tempKey[charIndex]) - hex) << 4;
+        outputKey[byteIndex] = outputKey[byteIndex] | (int)(strchr(hex, tempKey[charIndex + 1]) - hex);
     }
 
     return outputKey;
