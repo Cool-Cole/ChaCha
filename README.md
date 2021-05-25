@@ -2,7 +2,7 @@
 
 Welcome to my first public project!
 
-This is a Linux binary that
+This is a Linux binary that can encrypt/decrypt files using the ChaCha encryption algorithm.
 
 If you would like to make a contribution to this project please open up an issue and, instead of submitting code, please submit advice/resources to help me learn what I am doing incorrectly or what I could be doing better. That would help a lot!!!
 
@@ -10,7 +10,7 @@ If you would like to make a contribution to this project please open up an issue
 Do not use this in production code! I am not a Cryptographer and only a novice at C, as such this code is probably really bad! This is just a learning project.
 
 # Implemented
-* ChaCha 8, 12, 20, with a 256 bit private key, 96 bit nonce and 32 bit counter.
+* The ChaCha encryption algorithim with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of variable length byte arrays in memory
 * File encryption tested and confirmed working! (On my i9-9900K I can achieve a throughput of about 500 Mibibytes per second when encrypting files from my SSD.)
 * Takes user input as a command line program
