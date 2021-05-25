@@ -92,7 +92,7 @@ void ChaChaEncrypt(chachastate *cipherInfo, uint32_t plainTextLen, uint8_t *plai
         uint8_t *stateByteArray = (uint8_t*)state;
 
         // This loops until either the entire keystream has been used or if the provided plainText has been encrypted
-        // TODO - This looks ugly, how do I clean this up?
+        // TODO - This looks ugly, how do I clean this up? Maybe only have this code run if the block size is not a multiple of plainTextLen.
         while(*keyStreamPosition != 64 && plainTextLen != 0){
             // XOR the plaintext byte to the keystream byte in order to produce the cipher text
             plainText[plainBytePosition] = plainText[plainBytePosition] ^ stateByteArray[*keyStreamPosition];
