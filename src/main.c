@@ -17,18 +17,22 @@ void printHelp(){
 
     printf( "Usage: chacha [OPTION]... [FILE]...\n"\
             "Encrypts/Decrypts files using ChaCha20\n"
-            "\n -h                   Prints this screen\n"\
+            "\n"\
+            " -h                   Prints this screen\n"\
             " -e [filename]        Encrypts a specified file (must be passed with -r or -k and -n)\n"\
             " -d [filename]        Decrypts a specified file (must be passed with -k and -n)\n"\
             " -k [256 bit Key]     Specifies the key used for encryption/decryption\n"\
             " -n [96 bit nonce]    Specifies the nonce used for encryption/decryption\n"\
             " -r                   Generates a random key and nonce pair\n"\
-            "\nExamples - \n"\
+            "\n"\
+            "Examples - \n"\
             "chacha -r -e testfile.txt\n"\
             "chacha -k EFA3B9D80AF046A4ECA49F3DF2AEBE65E076ECDB48821D7881969429D7997601 -n 5D91B78D027B67C57CC0B7AF -d testfile.txt.enc\n"\
-            "\nWARNING: This is a learning project! Do not trust without proper code review!\n"\
+            "\n"\
+            "WARNING: This is a learning project! Do not trust without proper code review!\n"\
             "This executable does not delete the file that it encrypts/decrypts. So don't worry about losing any data.\n"\
-            "\nChaCha file Encryptor created by Cole 2021\n"\
+            "\n"\
+            "ChaCha file Encryptor created by Cole 2021\n"\
             "Public Domain Software - Free Forever\n");
 
     exit(0);
