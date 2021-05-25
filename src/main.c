@@ -3,69 +3,234 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <sys/random.h>
 
 #include "chacha.h"
+#include "hex.h"
 
 #define NUMROUNDS 20
 
-int main() {
-    uint8_t key[32] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-                       0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11,
-                       0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b,
-                       0x1c, 0x1d, 0x1e, 0x1f};
+void printHelp(){
 
-    uint8_t nonce[12] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0x00};
+    printf( "\nWARNING: This is a learning project! Do not trust without proper code review!\n"\
+            "This executable does not delete the file that it encrypts/decrypts. So don't worry about losing any data.\n"\
+            "\n -h                   Prints this screen\n"\
+            " -e [filename]        Encrypts a specified file (must be passed with -r or -k and -n)\n"\
+            " -d [filename]        Decrypts a specified file (must be passed with -k and -n)\n"\
+            " -k [256 bit Key]     Specifies the key used for encryption/decryption\n"\
+            " -n [96 bit nonce]    Specifies the nonce used for encryption/decryption\n"\
+            " -r                   Generates a random key and nonce pair\n"\
+            "\nExamples - \n"\
+            "chacha -r -e testfile.txt\n"\
+            "chacha -k EFA3B9D80AF046A4ECA49F3DF2AEBE65E076ECDB48821D7881969429D7997601 -n 5D91B78D027B67C57CC0B7AF -d testfile.txt.enc\n"\
+            "\nChaCha file Encryptor created by Cole 2021\n"\
+            "Public Domain Software - Free Forever\n");
 
-/*
-    uint8_t plain[] = {0x4c, 0x61, 0x64, 0x69, 0x65, 0x73, 0x20, 0x61, 0x6e, 0x64, 0x20, 0x47, 0x65, 0x6e, 0x74, 0x6c
-   , 0x65, 0x6d, 0x65, 0x6e, 0x20, 0x6f, 0x66, 0x20, 0x74, 0x68, 0x65, 0x20, 0x63, 0x6c, 0x61, 0x73
-   , 0x73, 0x20, 0x6f, 0x66, 0x20, 0x27, 0x39, 0x39, 0x3a, 0x20, 0x49, 0x66, 0x20, 0x49, 0x20, 0x63
-   , 0x6f, 0x75, 0x6c, 0x64, 0x20, 0x6f, 0x66, 0x66, 0x65, 0x72, 0x20, 0x79, 0x6f, 0x75, 0x20, 0x6f
-   , 0x6e, 0x6c, 0x79, 0x20, 0x6f, 0x6e, 0x65, 0x20, 0x74, 0x69, 0x70, 0x20, 0x66, 0x6f, 0x72, 0x20
-   , 0x74, 0x68, 0x65, 0x20, 0x66, 0x75, 0x74, 0x75, 0x72, 0x65, 0x2c, 0x20, 0x73, 0x75, 0x6e, 0x73
-   , 0x63, 0x72, 0x65, 0x65, 0x6e, 0x20, 0x77, 0x6f, 0x75, 0x6c, 0x64, 0x20, 0x62, 0x65, 0x20, 0x69
-   , 0x74, 0x2e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};*/
-/*
-    uint8_t key[32] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                       0x00, 0x00, 0x00, 0x01};
+    exit(0);
+}
 
-    uint8_t nonce[12] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02};
-    */
+void fileEncrypt(char filename[], uint8_t key[], uint8_t nonce[]){
+
     uint32_t counter = 1;
-
-    uint32_t plainLen = 1;
-
+    uint32_t plainBufferLen = 1;
     chachastate chaInfo;
 
-    size_t readSize = 4096;
-
+    size_t readSize = 65536;
     uint8_t buffer[readSize];
 
+    char *fixedName = malloc(strlen(filename) * sizeof(char) + 5);
+    fixedName[0] = '.';
+    fixedName[1] = '/';
+    fixedName[2] = '\0';
+    strcat(fixedName, filename);
+
     FILE *rfp;
-    rfp = fopen("../plain1.enc","rb");
+    rfp = fopen(fixedName,"rb");
+
+    if(rfp == NULL){
+        printf("Could not open %s\nQuitting...", filename);
+        exit(1);
+    }
 
     FILE *wfp;
-    wfp = fopen("../plain1.txt","wb");
+    wfp = fopen(strcat(fixedName, ".enc"),"wb");
 
-    if(rfp == NULL || wfp == NULL){
-        printf("Could not open file\n");
+    if(wfp == NULL){
+        printf("Could not create encrypted file %s\nQuitting...", strcat(fixedName, ".enc"));
         exit(1);
     }
 
     ChaChaInitialize(&chaInfo, key, nonce, &counter, NUMROUNDS);
 
-    while(plainLen != 0){
-        plainLen = fread(buffer, 1, readSize, rfp);
+    // While there is data still to be read from the file encrypt it
+    while(plainBufferLen != 0){
+        plainBufferLen = fread(buffer, 1, readSize, rfp);
 
-        ChaChaDecrypt(&chaInfo, plainLen, buffer);
+        ChaChaEncrypt(&chaInfo, plainBufferLen, buffer);
 
-        fwrite(buffer, 1, plainLen, wfp);
+        fwrite(buffer, 1, plainBufferLen, wfp);
     }
 
     fclose(rfp);
     fclose(wfp);
+    free(fixedName);
 
-    return 0;
+    printf("The file has been encrypted and written to %s\n", strcat(filename, ".enc"));
+}
+
+void fileDecrypt(char filename[], uint8_t key[], uint8_t nonce[]){
+    uint32_t counter = 1;
+    uint32_t plainBufferLen = 1;
+    chachastate chaInfo;
+
+    size_t readSize = 65536;
+    uint8_t buffer[readSize];
+
+    char *fixedName = malloc(strlen(filename) * sizeof(char) + 5);
+    fixedName[0] = '.';
+    fixedName[1] = '/';
+    fixedName[2] = '\0';
+    strcat(fixedName, filename);
+
+    FILE *rfp;
+    rfp = fopen(fixedName,"rb");
+
+    if(rfp == NULL){
+        printf("Could not open %s\nQuitting...", filename);
+        exit(1);
+    }
+
+    fixedName[strlen(fixedName) - 4] = '\0';
+
+    FILE *wfp;
+    wfp = fopen(fixedName,"wb");
+
+    if(wfp == NULL){
+        printf("Could not create encrypted file %s\nQuitting...", strcat(fixedName, ".enc"));
+        exit(1);
+    }
+
+    ChaChaInitialize(&chaInfo, key, nonce, &counter, NUMROUNDS);
+
+    // While there is data still to be read from the file encrypt it
+    while(plainBufferLen != 0){
+        plainBufferLen = fread(buffer, 1, readSize, rfp);
+
+        ChaChaEncrypt(&chaInfo, plainBufferLen, buffer);
+
+        fwrite(buffer, 1, plainBufferLen, wfp);
+    }
+
+    fclose(rfp);
+    fclose(wfp);
+    free(fixedName);
+
+    filename[strlen(filename) - 4] = '\0';
+    printf("The file has been decrypted and written to %s\n", filename);
+}
+
+int main(int argc, char *argv[]) {
+
+    int opt;
+    char nonceStr[25] = {'\0'};
+    char keyStr[65] = {'\0'};
+    char fileStr[255] = {'\0'};
+    uint8_t encFlag = 0;
+    uint8_t decFlag = 0;
+    uint8_t randomFlag = 0;
+
+    uint8_t keyFlag = 0;
+    uint8_t nonceFlag = 0;
+
+    uint8_t *byteKey;
+    uint8_t *byteNonce;
+
+    // put ':' in the starting of the
+    // string so that program can
+    //distinguish between '?' and ':'
+    while((opt = getopt(argc, argv, ":d:e:rn:k:h")) != -1)
+    {
+        switch(opt)
+        {
+            case 'd':
+                decFlag = 1;
+                strcpy(fileStr, optarg);
+                break;
+            case 'e':
+                encFlag = 1;
+                strcpy(fileStr, optarg);
+                break;
+            case 'r':
+                randomFlag = 1;
+                break;
+            case 'k':
+                keyFlag = 1;
+                strcpy(keyStr, optarg);
+                break;
+            case 'n':
+                nonceFlag = 1;
+                strcpy(nonceStr, optarg);
+                break;
+            case 'h':
+                printHelp();
+                //break;
+            case ':':
+                printf("option needs a value\n");
+                break;
+            case '?':
+                printf("unknown option: %c\n", optopt);
+                break;
+        }
+    }
+
+    // optind is for the extra arguments
+    // which are not parsed
+    //for(; optind < argc; optind++){
+    //    printf("extra arguments: %s\n", argv[optind]);
+    //}
+
+    // Check to see if -r and -k/-n are passed together or not at all
+    if((randomFlag != 1 && (keyFlag != 1 || nonceFlag != 1)) || (randomFlag == 1 && (keyFlag == 1 || nonceFlag == 1))){
+        printHelp();
+    }
+
+    // Check to see if -d and -e are passed together or not at all
+    if((encFlag == 1 && decFlag == 1) || (encFlag != 1 && decFlag != 1)){
+        printHelp();
+    }
+
+    // Check to see if the hex strings are of correct length
+    if(strlen(nonceStr) != 24 || strlen(keyStr) != 64){
+        printf("Improper hex encoded nonce or key given!\nPrinting help....\n");
+        printHelp();
+    }
+
+    if(encFlag == 1){
+        if(randomFlag == 1){
+            getentropy(byteKey, 32);
+            getentropy(byteNonce, 12);
+
+            printf("Random key: %s\n", binToHex(byteKey, 32));
+            printf("Random nonce: %s\n", binToHex(byteNonce, 12));
+            printf("Keep these values safe. They are needed to decrypt the file.\n");
+
+            fileEncrypt(fileStr, byteKey, byteNonce);
+        } else if (keyFlag == 1 && nonceFlag == 1) {
+            printf("Key: %s\n", keyStr);
+            printf("Nonce: %s\n", nonceStr);
+
+            fileEncrypt(fileStr, hexToBin(keyStr, 64), hexToBin(nonceStr, 24));
+        }
+    }
+
+
+    if(decFlag == 1){
+        printf("Key: %s\n", keyStr);
+        printf("Nonce: %s\n", nonceStr);
+
+        fileDecrypt(fileStr, hexToBin(keyStr, 64), hexToBin(nonceStr, 24));
+    }
 }
