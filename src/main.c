@@ -15,7 +15,7 @@
 
 void printHelp(){
 
-    printf( "\nWARNING: This is a learning project! Do not trust without proper code review!\n"\
+    printf( "WARNING: This is a learning project! Do not trust without proper code review!\n"\
             "This executable does not delete the file that it encrypts/decrypts. So don't worry about losing any data.\n"\
             "\n -h                   Prints this screen\n"\
             " -e [filename]        Encrypts a specified file (must be passed with -r or -k and -n)\n"\
