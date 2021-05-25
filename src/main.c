@@ -53,7 +53,7 @@ void fileEncrypt(char filename[], uint8_t key[], uint8_t nonce[]){
     rfp = fopen(fixedName,"rb");
 
     if(rfp == NULL){
-        printf("Could not open %s\nQuitting...", filename);
+        printf("Could not open %s\nQuitting...\n", filename);
         exit(1);
     }
 
