@@ -63,7 +63,7 @@ void fileEncrypt(char filename[], uint8_t key[], uint8_t nonce[]){
     wfp = fopen(strcat(fixedName, ".enc"),"wb");
 
     if(wfp == NULL){
-        printf("Could not create encrypted file %s\nQuitting...", strcat(fixedName, ".enc"));
+        printf("Could not create encrypted file %s\nQuitting...\n", strcat(fixedName, ".enc"));
         exit(1);
     }
 
@@ -103,7 +103,7 @@ void fileDecrypt(char filename[], uint8_t key[], uint8_t nonce[]){
     rfp = fopen(fixedName,"rb");
 
     if(rfp == NULL){
-        printf("Could not open %s\nQuitting...", filename);
+        printf("Could not open %s\nQuitting...\n", filename);
         exit(1);
     }
 
@@ -113,7 +113,7 @@ void fileDecrypt(char filename[], uint8_t key[], uint8_t nonce[]){
     wfp = fopen(fixedName,"wb");
 
     if(wfp == NULL){
-        printf("Could not create encrypted file %s\nQuitting...", strcat(fixedName, ".enc"));
+        printf("Could not create encrypted file %s\nQuitting...\n", strcat(fixedName, ".enc"));
         exit(1);
     }
 
