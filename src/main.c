@@ -163,18 +163,18 @@ int main(int argc, char *argv[]) {
                 break;
             case 'e':
                 encFlag = 1;
-                strcpy(fileStr, optarg);
+                strncpy(fileStr, optarg, 255);
                 break;
             case 'r':
                 randomFlag = 1;
                 break;
             case 'k':
                 keyFlag = 1;
-                strcpy(keyStr, optarg);
+                strncpy(keyStr, optarg, 64);
                 break;
             case 'n':
                 nonceFlag = 1;
-                strcpy(nonceStr, optarg);
+                strncpy(nonceStr, optarg, 24);
                 break;
             case 'h':
                 printHelp();
