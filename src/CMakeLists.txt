@@ -3,4 +3,4 @@ project(chacha C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(chacha main.c chacha.c chacha.h)
+add_executable(chacha main.c chacha.c chacha.h hex.c hex.h )
