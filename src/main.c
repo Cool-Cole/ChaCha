@@ -206,12 +206,6 @@ int main(int argc, char *argv[]) {
         printHelp();
     }
 
-    // Check to see if the hex strings are of correct length
-    if(strlen(nonceStr) != 24 || strlen(keyStr) != 64){
-        printf("Improper hex encoded nonce or key given!\nPrinting help....\n");
-        printHelp();
-    }
-
     if(encFlag == 1){
         if(randomFlag == 1){
             
@@ -228,6 +222,12 @@ int main(int argc, char *argv[]) {
 
             fileEncrypt(fileStr, byteKey, byteNonce);
         } else if (keyFlag == 1 && nonceFlag == 1) {
+            
+            // Check to see if the hex strings are of correct length
+            if(strlen(nonceStr) != 24 || strlen(keyStr) != 64){
+                printf("Improper hex encoded nonce or key given!\nPrinting help....\n");
+                printHelp();
+            }
             
             // The user provided nonce and key are phrased and shown back to the user
             // if there is a discrepancy between what the user entered and what is outputted
