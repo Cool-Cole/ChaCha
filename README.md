@@ -16,7 +16,8 @@ Do not use this in production code! I am not a Cryptographer and only a novice a
 * Takes user input as a command line program
 
 # TODO
-* Clean up code and turn this into a proper command line executable
+* Clean up and document code
+* Better handle edge cases in user input
 * Multi threading (maybe?)
 * Create a second vectorized implementation of ChaCha using AVX2 SIMD
 * Add Poly1305 for integrity verification
