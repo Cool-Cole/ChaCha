@@ -9,8 +9,21 @@ If you would like to make a contribution to this project please open up an issue
 # !WARNING!
 Do not use this in production code! I am not a Cryptographer and only a novice at C, as such this code is probably really bad! This is just a learning project.
 
+# Installing
+Compile with your compiler of choice (Don't use the included CMake file I don't know how to use it properly yet).
+
+`gcc -O3 main.c chacha.c chacha.h hex.c hex.h -o chacha`
+
+If you want to keep the `chacha` command local to your user move the binary to `$HOME/.local/bin/`.
+
+`cp chacha ~/.local/bin/`
+
+If you insist on making everyone suffer through my terrible command line program feel free to install it for all users by moving the binary to `/usr/local/bin/`.
+
+`sudo cp chacha /usr/local/bin/`
+
 # Implemented
-* The ChaCha encryption algorithim with a 256 bit private key, 96 bit nonce and 32 bit counter.
+* The ChaCha encryption algorithm with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of variable length byte arrays in memory
 * File encryption tested and confirmed working! (On my i9-9900K I can achieve a throughput of about 500 Mibibytes per second when encrypting files from my SSD.)
 * Takes user input as a command line program
