@@ -9,6 +9,14 @@ If you would like to make a contribution to this project please open up an issue
 # !WARNING!
 Do not use this in production code! I am not a Cryptographer and only a novice at C, as such this code is probably really bad! This is just a learning project.
 
+# Example
+
+Encrypting a file with a random key and nonce -
+`chacha -r -e example.txt`
+
+Decrypting a file
+`chacha -d example.txt.enc -k 000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F -n 000000000000004A00000000`
+
 # Installing
 Compile with your compiler of choice.
 
