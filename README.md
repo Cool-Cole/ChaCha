@@ -2,7 +2,7 @@
 
 Welcome to my first public project!
 
-This is a Linux binary that can encrypt/decrypt files using the ChaCha encryption algorithm.
+This is a Linux command line executable that can encrypt/decrypt files using the ChaCha encryption algorithm.
 
 If you would like to make a contribution to this project please open up an issue and, instead of submitting code, please submit advice/resources to help me learn what I am doing incorrectly or what I could be doing better. That would help a lot!!!
 
