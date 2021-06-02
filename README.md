@@ -14,7 +14,7 @@ Do not use this in production code! I am not a Cryptographer and only a novice a
 Encrypting a file with a random key and nonce -
 `chacha -r -e example.txt`
 
-Decrypting a file
+Decrypting a file - 
 `chacha -d example.txt.enc -k 000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F -n 000000000000004A00000000`
 
 # Installing
