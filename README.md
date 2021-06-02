@@ -10,7 +10,7 @@ If you would like to make a contribution to this project please open up an issue
 Do not use this in production code! I am not a Cryptographer and only a novice at C, as such this code is probably really bad! This is just a learning project.
 
 # Installing
-Compile with your compiler of choice (Don't use the included CMake file I don't know how to use it properly yet).
+Compile with your compiler of choice.
 
 `gcc -O3 main.c chacha.c chacha.h hex.c hex.h -o chacha`
 
@@ -24,16 +24,16 @@ If you insist on making everyone suffer through my terrible command line program
 
 # Implemented
 * The ChaCha encryption algorithm with a 256 bit private key, 96 bit nonce and 32 bit counter.
-* Encryption of variable length byte arrays in memory
+* Encryption of variable length byte arrays in memory.
 * File encryption/decryption tested and confirmed working!
-* Takes user input as a command line program
+* Takes user input as a command line program.
 
 # TODO
-* Clean up and document code
-* Better handle edge cases in user input
-* Multi threading (maybe?)
-* Create a second vectorized implementation of ChaCha using AVX2 SIMD
-* Add Poly1305 for integrity verification
+* Clean up and comment code.
+* Better handle edge cases in user input.
+* Multi threading. (maybe?)
+* Create a second vectorized implementation of ChaCha using AVX2 SIMD.
+* Add Poly1305 for integrity verification.
 
 # Sources
 Here are a list of references that I used to guide me along with their accompanying license. I try not to copy paste code.
