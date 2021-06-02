@@ -25,7 +25,7 @@ If you insist on making everyone suffer through my terrible command line program
 # Implemented
 * The ChaCha encryption algorithm with a 256 bit private key, 96 bit nonce and 32 bit counter.
 * Encryption of variable length byte arrays in memory
-* File encryption/decryption tested and confirmed working! (On my i9-9900K I can achieve a throughput of about 500 Mibibytes per second when encrypting files from my SSD.)
+* File encryption/decryption tested and confirmed working!
 * Takes user input as a command line program
 
 # TODO
