@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
         {
             case 'd':
                 decFlag = 1;
-                strcpy(fileStr, optarg);
+                strncpy(fileStr, optarg, 255);
                 break;
             case 'e':
                 encFlag = 1;
