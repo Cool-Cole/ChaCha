@@ -229,9 +229,9 @@ int main(int argc, char *argv[]) {
                 printHelp();
             }
             
-            // The user provided nonce and key are phrased and shown back to the user
+            // The user provided nonce and key are parsed and shown back to the user
             // if there is a discrepancy between what the user entered and what is outputted
-            // then an error has obviously occurred
+            // then an error has occurred
             printf("Key: %s\n", binToHex(hexToBin(keyStr, 64), 32));
             printf("Nonce: %s\n", binToHex(hexToBin(nonceStr, 24), 12));
 
