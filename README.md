@@ -26,7 +26,7 @@ If you want to keep the `chacha` command local to your user move the binary to `
 
 `cp chacha ~/.local/bin/`
 
-If you insist on making everyone suffer through my terrible command line program feel free to install it for all users by moving the binary to `/usr/local/bin/`.
+The binary can be installed for all users by moving the binary to `/usr/local/bin/`.
 
 `sudo cp chacha /usr/local/bin/`
 
